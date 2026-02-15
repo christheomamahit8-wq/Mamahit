@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Mamahit (MHT) - PTS Market</title>
+<style>
+body{
+    margin:0;
+    background:#0e1117;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color:white;
+    overflow:hidden;
+}
+
+/* Container chart - full screen */
+#chart{
+    height:100vh;
+    width:100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* Container untuk logo dan teks di atas */
+.header-container {
+    position: absolute;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    background: transparent;
+    padding: 0;
+    transition: all 0.3s ease;
+}
+
+/* Nama PT - teks MAMAHIT */
+.company-name-top .main {
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: -0.2px;
+    display: block;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+    text-align: center;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+/* Container untuk logo kiri, MHT, dan logo kanan - RAPAT */
+.logo-mht-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px; /* DIPERKECIL dari 8px menjadi 2px agar lebih rapat */
+}
+
+/* Logo kecil di sebelah kiri MHT - DIPERBESAR */
+.header-logo-left {
+    width: 36px; /* DIPERBESAR dari 28px */
+    height: 36px; /* DIPERBESAR dari 28px */
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.header-logo-left img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Teks MHT - sedikit diperbesar */
+.mht-text {
+    font-size: 22px; /* DIPERBESAR dari 18px */
+    font-weight: 600; /* DITAMBAH agar lebih tebal */
+    color: #ffffff;
+    font-variant: small-caps;
+    text-transform: lowercase;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    margin: 0 2px; /* Sedikit jarak kiri-kanan */
+}
+
+/* Logo kecil di sebelah kanan MHT - DIPERBESAR */
+.header-logo-right {
+    width: 36px; /* DIPERBESAR dari 28px */
+    height: 36px; /* DIPERBESAR dari 28px */
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.header-logo-right img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* SAAT LANDSCAPE (HP DIRIRINGKAN) - PINDAH KE KIRI ATAS */
+@media (orientation: landscape) {
+    .header-container {
+        top: 10px;
+        left: 15px;
+        transform: none;
+        align-items: flex-start;
+    }
+    
+    .company-name-top .main {
+        font-size: 24px;
+        text-align: left;
+    }
+    
+    .logo-mht-container {
+        justify-content: flex-start;
+        gap: 2px;
+    }
+    
+    .header-logo-left, .header-logo-right {
+        width: 30px; /* Sedikit lebih kecil di landscape */
+        height: 30px;
+    }
+    
+    .mht-text {
+        font-size: 20px;
+    }
+}
+
+/* Tombol Beli/Jual */
+.bottom-right-trade {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 50;
+    display: flex;
+    gap: 12px;
+}
+
+.bottom-right-trade button {
+    border: none;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    letter-spacing: 0.5px;
+    padding: 12px 32px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    font-family: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bottom-right-trade .buy{
+    background: #00c853;
+    color: white;
+}
+
+.bottom-right-trade .sell{
+    background: #d50000;
+    color: white;
+}
+
+.bottom-right-trade button:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+}
+
+/* Koin pojok kiri bawah */
+.bottom-left-coin {
+    position: absolute;
+    bottom: 30px;
+    left: 10px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: transparent;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    transition: transform 0.2s ease;
+}
+
+.bottom-left-coin:hover {
+    transform: scale(1.05);
+}
+
+.bottom-left-coin img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* CSS untuk memastikan chart tidak mengganggu */
+#chart iframe {
+    border: none;
+}
+</style>
+</head>
+<body>
+
+<!-- Chart Container -->
+<div id="chart"></div>
+
+<!-- Header: MAMAHIT di atas, logo kiri + MHT + logo kanan di bawah - RAPAT DAN BESAR -->
+<div class="header-container" id="headerContainer">
+    <div class="company-name-top">
+        <span class="main">𝗠𝗮𝗺𝗮𝗵𝗶𝘁</span>
+    </div>
+    <div class="logo-mht-container">
+        <!-- Logo kiri - DIPERBESAR -->
+        <div class="header-logo-left">
+            <img src="https://i.ibb.co.com/Nd158vYt/1771118610174.jpg" alt="MHT Logo Kiri">
+        </div>
+        <!-- Teks MHT - DIPERBESAR -->
+        <span class="mht-text">ᴹᴴᵀ</span>
+        <!-- Logo kanan - DIPERBESAR -->
+        <div class="header-logo-right">
+            <img src="https://i.ibb.co.com/gFJvxjHF/1771119584326.jpg" alt="MHT Logo Kanan">
+        </div>
+    </div>
+</div>
+
+<!-- Koin pojok kiri bawah -->
+<div class="bottom-left-coin">
+    <img src="https://i.ibb.co.com/Nd158vYt/1771118610174.jpg" alt="MHT Coin">
+</div>
+
+<!-- Tombol Beli/Jual -->
+<div class="bottom-right-trade">
+    <button class="buy" onclick="alert('Fitur Beli dalam pengembangan')">BELI</button>
+    <button class="sell" onclick="alert('Fitur Jual dalam pengembangan')">JUAL</button>
+</div>
+
+<script src="https://s3.tradingview.com/tv.js"></script>
+<script>
+let widget = null;
+
+// Fungsi untuk menangani perubahan orientasi
+function handleOrientation() {
+    console.log("Orientasi: " + (window.innerHeight < window.innerWidth ? "Landscape" : "Portrait"));
+}
+
+// Inisialisasi TradingView Widget
+function initTradingView() {
+    if (typeof TradingView === 'undefined') {
+        setTimeout(initTradingView, 500);
+        return;
+    }
+    
+    widget = new TradingView.widget({
+        "autosize": true,
+        "symbol": "BINANCE:QNTUSDT",
+        "interval": "1",
+        "timezone": "Asia/Jakarta",
+        "theme": "dark",
+        "style": "1",
+        "locale": "id",
+        "hide_top_toolbar": true,
+        "hide_legend": true,
+        "hide_side_toolbar": true,
+        "allow_symbol_change": false,
+        "details": false,
+        "hotlist": false,
+        "calendar": false,
+        "display_mode": "compact",
+        "show_popup_button": false,
+        "container_id": "chart",
+        "loading_screen": {
+            "backgroundColor": "#0e1117",
+            "foregroundColor": "#00c853"
+        },
+        "studies": [
+            "RSI@tv-basicstudies",
+            "MACD@tv-basicstudies"
+        ]
+    });
+    
+    widget.onChartReady(function() {
+        console.log("Chart siap - Logo besar dan rapat");
+        handleOrientation();
+    });
+}
+
+// Inisialisasi aplikasi
+function init() {
+    console.log("Inisialisasi aplikasi - Logo besar dan rapat");
+    initTradingView();
+    
+    window.addEventListener('resize', handleOrientation);
+    window.addEventListener('orientationchange', function() {
+        setTimeout(handleOrientation, 100);
+    });
+}
+
+window.addEventListener('load', init);
+</script>
+
+</body>
+</html>
